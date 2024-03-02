@@ -4,7 +4,7 @@ import com.cagataysencan.sanscase.model.MatchResponse
 import retrofit2.HttpException
 import java.io.IOException
 
-class MatchRepository(val apiService: MatchAPIService) {
+class MatchApiRepository(private val apiService: MatchApiService) {
     suspend fun getMatches() : NetworkResult<MatchResponse?> {
         return try {
             val response = apiService.getMatches()
