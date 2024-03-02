@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cagataysencan.sanscase.constant.Constants
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(tableName = Constants.TABLE_NAME_MATCH)
 data class Match(
@@ -26,4 +27,4 @@ data class Match(
     val score: Score?,
     @SerializedName("to")
     val tournament: Tournament?
-)
+) : Serializable

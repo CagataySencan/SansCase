@@ -9,8 +9,8 @@ class MatchTableRepository(private val database: AppDatabase) {
         matchDao.insertMatch(match)
     }
 
-    suspend fun getAllMatches(): List<Match> {
-        return matchDao.getAllMatches()
+    suspend fun getAllMatches(): ArrayList<Match> {
+        return ArrayList(matchDao.getAllMatches())
     }
 
     suspend fun deleteMatchById(id: Long) {
