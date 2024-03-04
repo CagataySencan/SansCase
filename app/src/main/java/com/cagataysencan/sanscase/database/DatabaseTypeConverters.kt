@@ -7,7 +7,7 @@ import com.cagataysencan.sanscase.model.TeamScore
 import com.cagataysencan.sanscase.model.Tournament
 import com.google.gson.Gson
 
-class MatchEntityTypeConverter {
+class DatabaseTypeConverters {
     @TypeConverter
     fun fromTeam(team: Team?): String? {
         return Gson().toJson(team)

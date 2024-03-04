@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.databinding.TournamentCardViewBinding
 import com.cagataysencan.sanscase.model.Match
+import java.util.Date
 
-class TournamentAdapter(private val matches: Map<String?, List<Match?>>) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
+class TournamentAdapter(private var matches: Map<String, List<Match>>?) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
     inner class TournamentViewHolder(var view: TournamentCardViewBinding) : RecyclerView.ViewHolder(view.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TournamentViewHolder {
@@ -20,18 +21,27 @@ class TournamentAdapter(private val matches: Map<String?, List<Match?>>) : Recyc
     }
 
     override fun getItemCount(): Int {
-        return matches.size
+        return matches?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
-        holder.view.match = matches.values.toList()[position][0]
-        val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
-        val matchAdapter = MatchAdapter(matches.values.toList()[position])
-        val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
-        holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
-        holder.view.matchRecyclerView.layoutManager = linearLayoutManager
-        holder.view.matchRecyclerView.adapter = matchAdapter
+        matches?.values?.let { matchesList ->
+            holder.view.match = matchesList.toList()[position][0]
+        }
+        matches?.values?.let {matchesList ->
+            val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
+            val matchAdapter = MatchAdapter(matchesList.toList()[position])
+            val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
+            holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
+            holder.view.matchRecyclerView.layoutManager = linearLayoutManager
+            holder.view.matchRecyclerView.adapter = matchAdapter
+        }
+
     }
 
+    fun updateMatches(matches: Map<String, List<Match>>) {
+        this.matches = matches
+        notifyDataSetChanged()
+    }
 
 }

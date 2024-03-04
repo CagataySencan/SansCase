@@ -7,6 +7,10 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.cagataysencan.sanscase.R
+import com.cagataysencan.sanscase.model.Match
+import com.cagataysencan.sanscase.model.MatchResponse
+import com.cagataysencan.sanscase.service.NetworkResult
+
 
 fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDrawable){
 

@@ -9,9 +9,9 @@ import com.cagataysencan.sanscase.constant.Constants
 import com.cagataysencan.sanscase.model.Match
 
 @Database(entities = [Match::class], version = Constants.DATABASE_VERSION, exportSchema = false)
-@TypeConverters(MatchEntityTypeConverter::class)
+@TypeConverters(DatabaseTypeConverters::class)
 abstract class AppDatabase: RoomDatabase() {
-    abstract fun getMatchDao(): MatchDao
+    abstract fun getMatchDao(): BaseDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

@@ -5,7 +5,7 @@ import com.cagataysencan.sanscase.model.MatchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 
-interface MatchApi {
+interface ApiInterface {
     @GET(BuildConfig.MATCH_URL)
     suspend fun getMatches() : Response<MatchResponse>
 }

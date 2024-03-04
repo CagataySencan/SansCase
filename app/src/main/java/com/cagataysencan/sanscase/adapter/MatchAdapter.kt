@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.databinding.MatchCardViewBinding
 import com.cagataysencan.sanscase.model.Match
+import java.text.SimpleDateFormat
+import java.util.Date
 
-class MatchAdapter(private val matches: List<Match?>) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
+class MatchAdapter(private val matches: List<Match>) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
     inner class MatchViewHolder(var view : MatchCardViewBinding) : RecyclerView.ViewHolder(view.root)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchAdapter.MatchViewHolder {
         val inflater = LayoutInflater.from(parent.context)
