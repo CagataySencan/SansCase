@@ -6,10 +6,15 @@
         <variable
             name="match"
             type="com.cagataysencan.sanscase.model.Match" />
+        <variable
+            name="matchAdapter"
+            type="com.cagataysencan.sanscase.adapter.MatchAdapter" />
     </data>
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{()-> matchAdapter.onItemClick(cardView, match)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -22,42 +27,60 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"
                 android:text="@{match.score.abbreviation}"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/home_team_text_view"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"
                 android:text="@{match.homeTeam.name}"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:lines="1"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/current_score_text_view"
+                app:layout_constraintStart_toEndOf="@+id/match_status_text_view"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/current_score_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/black"
                 android:text="@{match.score.homeScore.score.toString() + '-' + match.score.awayScore.score.toString()}"
                 android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/away_team_text_view"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/black"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@{match.awayTeam.name}"
+                android:textAlignment="center"
+                android:lines="1"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/first_half_text_view"
                 app:layout_constraintStart_toEndOf="@+id/current_score_text_view"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,8 +90,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/black"
+                android:layout_marginBottom="8dp"
                 android:text="@{match.score.homeScore.firstHalfScore.toString() + '-' + match.score.awayScore.firstHalfScore.toString()}"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
