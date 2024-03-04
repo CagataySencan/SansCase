@@ -27,8 +27,6 @@ class TournamentAdapter(private var matches: Map<String, List<Match>>?) : Recycl
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
         matches?.values?.let { matchesList ->
             holder.view.match = matchesList.toList()[position][0]
-        }
-        matches?.values?.let {matchesList ->
             val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
             val matchAdapter = MatchAdapter(matchesList.toList()[position])
             val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
@@ -36,12 +34,11 @@ class TournamentAdapter(private var matches: Map<String, List<Match>>?) : Recycl
             holder.view.matchRecyclerView.layoutManager = linearLayoutManager
             holder.view.matchRecyclerView.adapter = matchAdapter
         }
-
     }
 
     fun updateMatches(matches: Map<String, List<Match>>) {
         this.matches = matches
-        notifyDataSetChanged()
+        this.notifyDataSetChanged()
     }
 
 }

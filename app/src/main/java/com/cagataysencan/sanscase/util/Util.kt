@@ -1,5 +1,6 @@
 package com.cagataysencan.sanscase.util
 
+import android.app.AlertDialog
 import android.content.Context
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -11,7 +12,21 @@ import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.model.MatchResponse
 import com.cagataysencan.sanscase.service.NetworkResult
 
+fun createAlertDialogWithAction(context: Context, messageText : String , okButtonText : String , action : () -> Unit) {
+    val alertDialogBuilder = AlertDialog.Builder(context)
 
+    // Set the title and message for the dialog
+    alertDialogBuilder.setTitle(R.string.warning)
+    alertDialogBuilder.setMessage(messageText)
+
+    // Set a positive button and its click listener
+    alertDialogBuilder.setPositiveButton(okButtonText) { dialog, which ->
+        action()
+        dialog.dismiss()
+    }
+    alertDialogBuilder.create()
+    alertDialogBuilder.show()
+}
 fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDrawable){
 
     val options = RequestOptions()

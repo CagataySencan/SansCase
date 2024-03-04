@@ -15,6 +15,7 @@ import com.cagataysencan.sanscase.adapter.TournamentAdapter
 import com.cagataysencan.sanscase.databinding.FragmentMainBinding
 import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.service.NetworkResult
+import com.cagataysencan.sanscase.util.createAlertDialogWithAction
 import com.cagataysencan.sanscase.viewmodel.MainViewModel
 
 
@@ -54,14 +55,10 @@ class MainFragment : Fragment() {
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {
-                    matchesResponse.data?.let { matchesMap ->
-                        tournamentAdapter.updateMatches(matchesMap)
-                    }
+                    tournamentAdapter.updateMatches(matchesResponse.data!!)
                 }
                 is NetworkResult.Error -> {
-                    matchesResponse.exception.let { exception ->
-
-                    }
+                    createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)
                 }
             }
         })
