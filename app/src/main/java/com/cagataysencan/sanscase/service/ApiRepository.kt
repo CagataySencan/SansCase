@@ -8,13 +8,12 @@ import com.cagataysencan.sanscase.model.MatchResponse
 import retrofit2.HttpException
 import java.io.IOException
 
-class ApiRepository(private val apiService: ApiService, private val databaseRepository: DatabaseRepository) {
-    suspend fun getMatches() : NetworkResult<HashMap<String, List<Match>>> {
+class ApiRepository(private val apiService: ApiService) {
+    suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<HashMap<String, List<Match>>> {
         return try {
             val response = apiService.getMatches()
-            val favoriteMatches = databaseRepository.getAllMatches()
-            var processedMatches = addFavoriteMatches(response.body(),favoriteMatches)
-            var processedMatchesMap = processMatches(processedMatches)
+            val processedMatches = addFavoriteMatches(response.body(),favoriteMatches)
+            val processedMatchesMap = processMatches(processedMatches)
             processedMatchesMap[Constants.FAVORITES] = favoriteMatches
             if(processedMatchesMap.isNotEmpty()) {
                 NetworkResult.Success(processedMatchesMap)

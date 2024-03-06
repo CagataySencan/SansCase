@@ -26,16 +26,14 @@ class TournamentAdapter(private var matchHashMap: HashMap<String, List<Match>>?,
 
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
         matchHashMap?.values?.let { matchesList ->
-            if(matchesList.isNotEmpty()) {
-                holder.view.tournamentName = matchHashMap!!.keys.toList()[position]
-                holder.view.tournamentFlag = if (matchHashMap!!.keys.toList()[position] == Constants.FAVORITES) "Default Image" else matchesList.toList()[position].first().tournament!!.flag
-                val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
-                val matchAdapter = MatchAdapter(matchesList.toList()[position], onItemClickListener)
-                val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
-                holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
-                holder.view.matchRecyclerView.layoutManager = linearLayoutManager
-                holder.view.matchRecyclerView.adapter = matchAdapter
-            }
+            holder.view.tournamentName = matchHashMap!!.keys.toList()[position]
+            holder.view.tournamentFlag = if (matchHashMap!!.keys.toList()[position] == Constants.FAVORITES) "Default Image" else matchesList.toList()[position].first().tournament!!.flag
+            val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
+            val matchAdapter = MatchAdapter(matchesList.toList()[position], onItemClickListener)
+            val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
+            holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
+            holder.view.matchRecyclerView.layoutManager = linearLayoutManager
+            holder.view.matchRecyclerView.adapter = matchAdapter
         }
     }
 

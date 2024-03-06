@@ -17,13 +17,14 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val databaseRepository = DatabaseRepository(AppDatabase.getDatabase(application)!!)
-    private val apiRepository = ApiRepository(ApiService(),databaseRepository)
+    private val apiRepository = ApiRepository(ApiService())
+    private val favoriteMatchList = ArrayList<Match>()
     val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
-    val favoriteMatchList = ArrayList<Match>()
+
 
     fun getMatches() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = apiRepository.getMatches()
+            val result = apiRepository.getMatches(databaseRepository.getAllMatches())
             withContext(Dispatchers.Main) {
                 matchesResponse.value = result
             }
