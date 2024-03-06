@@ -43,19 +43,21 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
 
     private fun initiateFragment() {
         tournamentAdapter = TournamentAdapter(HashMap<String, List<Match>>(), this)
-        favoriteMatchAdapter = MatchAdapter(ArrayList<Match>(), this)
         binding.tournamentRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.tournamentRecyclerView.adapter = tournamentAdapter
+
+        favoriteMatchAdapter = MatchAdapter(ArrayList<Match>(), this)
         binding.favoriteMatchRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.favoriteMatchRecyclerView.adapter = favoriteMatchAdapter
 
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))[MainViewModel::class.java]
-        viewModel.getMatches()
-        viewModel.getFavoriteMatches()
         observeLiveData()
     }
 
     private fun observeLiveData() {
+        viewModel.getMatches()
+        viewModel.getFavoriteMatches()
+
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {

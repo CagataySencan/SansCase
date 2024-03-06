@@ -7,13 +7,12 @@ import com.cagataysencan.sanscase.model.Match
 
 @Dao
 interface BaseDao {
-
     @Upsert
-    fun insertMatch(match: Match)
+    suspend fun insertMatch(match: Match)
 
     @Query("SELECT * FROM 'match'")
-    fun getAllMatches(): List<Match>
+    suspend fun getAllMatches(): List<Match>
 
     @Query("DELETE FROM 'match' WHERE id = :id")
-    fun deleteMatchById(id: Long)
+    suspend fun deleteMatchById(id: Long)
 }

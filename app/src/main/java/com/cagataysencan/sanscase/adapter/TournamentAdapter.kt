@@ -39,5 +39,4 @@ class TournamentAdapter(private var matchHashMap: HashMap<String, List<Match>>?,
         this.matchHashMap = matches
         this.notifyDataSetChanged()
     }
-
 }

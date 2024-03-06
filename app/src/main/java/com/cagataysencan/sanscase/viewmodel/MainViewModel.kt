@@ -40,26 +40,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun favoriteAndUnfavoriteMatch(match: Match)  {
-        val response = (matchesResponse.value as NetworkResult.Success)
+        val currentMatches = (matchesResponse.value as NetworkResult.Success)
         viewModelScope.launch(Dispatchers.IO) {
             match.id?.let {id ->
-                val matchFromResponse = response.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == id }
+                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]!!.indexOfFirst { it.id == id }
                 if(match.isFavorite) {
-                    response.matchesMap[match.tournament.name]?.get(matchFromResponse!!)?.isFavorite = false
+                    currentMatches.matchesMap[match.tournament.name]!![favoriteMatchId].isFavorite = false
                     databaseRepository.deleteMatchById(id)
                 } else {
-                    response.matchesMap[match.tournament.name]?.get(matchFromResponse!!)?.isFavorite = true
+                    currentMatches.matchesMap[match.tournament.name]!![favoriteMatchId].isFavorite = true
                     databaseRepository.insertMatch(match)
                 }
-                response.matchesMap = HashMap(response.matchesMap.filterValues { it.isNotEmpty() })
+                currentMatches.matchesMap = HashMap(currentMatches.matchesMap.filterValues { it.isNotEmpty() })
                 favoriteMatchList = databaseRepository.getAllMatches()
             }
             withContext(Dispatchers.Main) {
                 favoriteMatches.value = favoriteMatchList
-                matchesResponse.value = response
+                matchesResponse.value = currentMatches
             }
         }
-
     }
-
 }
