@@ -7,14 +7,14 @@
             name="match"
             type="com.cagataysencan.sanscase.model.Match" />
         <variable
-            name="matchAdapter"
-            type="com.cagataysencan.sanscase.adapter.MatchAdapter" />
+            name="onItemClickListener"
+            type="com.cagataysencan.sanscase.adapter.MatchAdapter.OnItemClickListener" />
     </data>
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()-> matchAdapter.onItemClick(cardView, match)}">
+        android:onClick="@{()-> onItemClickListener.onItemClick(match)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -30,6 +30,8 @@
                 android:layout_marginBottom="8dp"
                 android:text="@{match.score.abbreviation}"
                 android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,9 +45,10 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{match.homeTeam.name}"
-                android:textAlignment="center"
+                android:textAlignment="textEnd"
                 android:textColor="@color/black"
                 android:lines="1"
+                android:ellipsize="end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/current_score_text_view"
                 app:layout_constraintStart_toEndOf="@+id/match_status_text_view"
@@ -76,8 +79,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{match.awayTeam.name}"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:lines="1"
+                android:ellipsize="end"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/first_half_text_view"
@@ -89,13 +93,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{match.score.homeScore.firstHalfScore.toString() + '-' + match.score.awayScore.firstHalfScore.toString()}"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_image_view"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/favorite_image_view"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:onClick="@{() -> onItemClickListener.onFavoriteClick(match, favoriteImageView)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:changeImageView="@{match}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

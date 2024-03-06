@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.databinding.FragmentDetailBinding
 import com.cagataysencan.sanscase.viewmodel.DetailViewModel
-import com.cagataysencan.sanscase.viewmodel.MainViewModel
 
 class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding

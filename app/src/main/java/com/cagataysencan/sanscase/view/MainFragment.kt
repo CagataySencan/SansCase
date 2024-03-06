@@ -5,12 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
+import com.cagataysencan.sanscase.adapter.MatchAdapter
 import com.cagataysencan.sanscase.adapter.TournamentAdapter
 import com.cagataysencan.sanscase.databinding.FragmentMainBinding
 import com.cagataysencan.sanscase.model.Match
@@ -19,7 +22,7 @@ import com.cagataysencan.sanscase.util.createAlertDialogWithAction
 import com.cagataysencan.sanscase.viewmodel.MainViewModel
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var tournamentAdapter: TournamentAdapter
@@ -40,12 +43,12 @@ class MainFragment : Fragment() {
     }
 
     private fun initiateFragment() {
-        tournamentAdapter =  TournamentAdapter(HashMap<String, List<Match>>())
+        tournamentAdapter =  TournamentAdapter(HashMap<String, List<Match>>(), this)
         linearLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.tournamentRecyclerView.layoutManager = linearLayoutManager
         binding.tournamentRecyclerView.adapter = tournamentAdapter
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))[MainViewModel::class.java]
         viewModel.getMatches()
 
         observeLiveData()
@@ -55,12 +58,21 @@ class MainFragment : Fragment() {
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {
-                    tournamentAdapter.updateMatches(matchesResponse.data!!)
+                    tournamentAdapter.updateMatches(matchesResponse.matchesMap!!)
                 }
                 is NetworkResult.Error -> {
                     createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)
                 }
             }
         })
+    }
+
+    override fun onItemClick(match: Match) {
+        val action = MainFragmentDirections.actionMainFragmentToDetailFragment(match)
+        Navigation.findNavController(requireView()).navigate(action)
+    }
+
+    override fun onFavoriteClick(match: Match, view: ImageView) {
+        viewModel.favoriteAndUnfavoriteMatch(match)
     }
 }

@@ -6,5 +6,5 @@ data class MatchResponse(
     @SerializedName("success")
     val success: Boolean?,
     @SerializedName("data")
-    val data: ArrayList<Match>?
+    val matchArrayList: ArrayList<Match>?
 )

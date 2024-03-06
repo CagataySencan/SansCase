@@ -1,8 +1,8 @@
 package com.cagataysencan.sanscase.service
 
 sealed class NetworkResult<T>(
-    data: T? = null,
+    matchesMap: T? = null,
     exception: Exception? = null) {
-    data class Success <T>(val data: T) : NetworkResult<T>(data, null)
+    data class Success <T>(var matchesMap: T) : NetworkResult<T>(matchesMap, null)
     data class Error <T>(val exception: Exception) : NetworkResult<T>(null, exception)
 }

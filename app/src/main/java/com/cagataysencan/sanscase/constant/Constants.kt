@@ -5,5 +5,6 @@ class Constants {
         const val DATABASE_NAME = "SansCase.db"
         const val DATABASE_VERSION = 1
         const val TABLE_NAME_MATCH = "match"
+        const val FAVORITES = "Favoriler"
     }
 }

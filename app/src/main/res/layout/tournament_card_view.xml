@@ -4,8 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="match"
-            type="com.cagataysencan.sanscase.model.Match" />
+            name="tournamentName"
+            type="String" />
+        <variable
+            name="tournamentFlag"
+            type="String" />
+
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,7 +22,7 @@
             android:layout_height="25dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="16dp"
-            android:downloadUrl="@{match.tournament.flag}"
+            android:downloadUrl="@{tournamentFlag}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="18dp"
-            android:text="@{match.tournament.name}"
+            android:text="@{tournamentName}"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/country_flag_image_view"

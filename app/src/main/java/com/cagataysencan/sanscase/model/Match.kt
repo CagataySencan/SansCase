@@ -26,5 +26,6 @@ data class Match(
     @SerializedName("sc")
     val score: Score?,
     @SerializedName("to")
-    val tournament: Tournament?
+    val tournament: Tournament?,
+    var isFavorite: Boolean = false
 ) : Serializable

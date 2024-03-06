@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
+import com.cagataysencan.sanscase.constant.Constants
 import com.cagataysencan.sanscase.databinding.TournamentCardViewBinding
 import com.cagataysencan.sanscase.model.Match
-import java.util.Date
 
-class TournamentAdapter(private var matches: Map<String, List<Match>>?) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
+class TournamentAdapter(private var matchHashMap: HashMap<String, List<Match>>?, private val onItemClickListener: MatchAdapter.OnItemClickListener) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
     inner class TournamentViewHolder(var view: TournamentCardViewBinding) : RecyclerView.ViewHolder(view.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TournamentViewHolder {
@@ -21,23 +21,26 @@ class TournamentAdapter(private var matches: Map<String, List<Match>>?) : Recycl
     }
 
     override fun getItemCount(): Int {
-        return matches?.size ?: 0
+        return matchHashMap?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
-        matches?.values?.let { matchesList ->
-            holder.view.match = matchesList.toList()[position][0]
-            val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
-            val matchAdapter = MatchAdapter(matchesList.toList()[position])
-            val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
-            holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
-            holder.view.matchRecyclerView.layoutManager = linearLayoutManager
-            holder.view.matchRecyclerView.adapter = matchAdapter
+        matchHashMap?.values?.let { matchesList ->
+            if(matchesList.isNotEmpty()) {
+                holder.view.tournamentName = matchHashMap!!.keys.toList()[position]
+                holder.view.tournamentFlag = if (matchHashMap!!.keys.toList()[position] == Constants.FAVORITES) "Default Image" else matchesList.toList()[position].first().tournament!!.flag
+                val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
+                val matchAdapter = MatchAdapter(matchesList.toList()[position], onItemClickListener)
+                val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
+                holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
+                holder.view.matchRecyclerView.layoutManager = linearLayoutManager
+                holder.view.matchRecyclerView.adapter = matchAdapter
+            }
         }
     }
 
-    fun updateMatches(matches: Map<String, List<Match>>) {
-        this.matches = matches
+    fun updateMatches(matches: HashMap<String, List<Match>>) {
+        this.matchHashMap = matches
         this.notifyDataSetChanged()
     }
 

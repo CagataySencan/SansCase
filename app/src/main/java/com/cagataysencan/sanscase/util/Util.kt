@@ -9,8 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.model.Match
-import com.cagataysencan.sanscase.model.MatchResponse
-import com.cagataysencan.sanscase.service.NetworkResult
 
 fun createAlertDialogWithAction(context: Context, messageText : String , okButtonText : String , action : () -> Unit) {
     val alertDialogBuilder = AlertDialog.Builder(context)
@@ -31,7 +29,7 @@ fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDr
 
     val options = RequestOptions()
         .placeholder(progressDrawable)
-        .error(R.mipmap.ic_launcher_round)
+        .error(R.drawable.favorited_match)
 
     Glide.with(context)
         .setDefaultRequestOptions(options)
@@ -49,4 +47,9 @@ fun placeholderProgressBar(context: Context) : CircularProgressDrawable {
 @BindingAdapter("android:downloadUrl")
 fun downloadImage(view: ImageView, url:String?) {
     view.downloadFromUrl(url, placeholderProgressBar(view.context))
+}
+
+@BindingAdapter("android:changeImageView")
+fun changeImageView(view: ImageView, match: Match) {
+    view.setImageResource(if (match.isFavorite) R.drawable.favorited_match else R.drawable.unfavorited_match)
 }
