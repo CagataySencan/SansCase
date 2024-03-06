@@ -1,9 +1,9 @@
 package com.cagataysencan.sanscase.database
 
 import com.cagataysencan.sanscase.model.Match
+import javax.inject.Inject
 
-class DatabaseRepository(private val database: AppDatabase) {
-    private val matchDao = database.getMatchDao()
+class DatabaseRepository @Inject constructor(private val matchDao: BaseDao) {
 
     suspend fun insertMatch(match: Match) {
         matchDao.insertMatch(match)

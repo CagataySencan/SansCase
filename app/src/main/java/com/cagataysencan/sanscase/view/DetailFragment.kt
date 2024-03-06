@@ -6,14 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.databinding.FragmentDetailBinding
 import com.cagataysencan.sanscase.viewmodel.DetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
+    @Inject
+    lateinit var viewModel: DetailViewModel
+
     private lateinit var binding: FragmentDetailBinding
-    private lateinit var viewModel: DetailViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -28,7 +33,6 @@ class DetailFragment : Fragment() {
         initiateFragment()
     }
     private fun initiateFragment() {
-        viewModel = ViewModelProvider(this)[DetailViewModel::class.java]
         arguments?.let {
             binding.match = DetailFragmentArgs.fromBundle(it).match
             binding.viewModel = viewModel

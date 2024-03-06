@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,11 +19,15 @@ import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.service.NetworkResult
 import com.cagataysencan.sanscase.util.createAlertDialogWithAction
 import com.cagataysencan.sanscase.viewmodel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
+    @Inject
+    lateinit var viewModel: MainViewModel
+
     private lateinit var binding: FragmentMainBinding
-    private lateinit var viewModel: MainViewModel
     private lateinit var tournamentAdapter: TournamentAdapter
     private lateinit var favoriteMatchAdapter: MatchAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +53,6 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
         binding.favoriteMatchRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.favoriteMatchRecyclerView.adapter = favoriteMatchAdapter
 
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))[MainViewModel::class.java]
         observeLiveData()
     }
 
@@ -85,6 +87,6 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     }
 
     override fun onFavoriteClick(match: Match, view: ImageView) {
-        viewModel.favoriteAndUnfavoriteMatch(match)
+        viewModel.toggleFavorite(match)
     }
 }

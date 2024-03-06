@@ -1,22 +1,21 @@
 package com.cagataysencan.sanscase.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cagataysencan.sanscase.database.AppDatabase
 import com.cagataysencan.sanscase.database.DatabaseRepository
 import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.service.ApiRepository
-import com.cagataysencan.sanscase.service.ApiService
 import com.cagataysencan.sanscase.service.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private val databaseRepository = DatabaseRepository(AppDatabase.getDatabase(application)!!)
-    private val apiRepository = ApiRepository(ApiService())
+@HiltViewModel
+class MainViewModel @Inject constructor(private val databaseRepository: DatabaseRepository, private val apiRepository: ApiRepository) : ViewModel() {
     private var favoriteMatchList = ArrayList<Match>()
     val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
     val favoriteMatches =  MutableLiveData<List<Match>>()
@@ -39,7 +38,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun favoriteAndUnfavoriteMatch(match: Match)  {
+    fun toggleFavorite(match: Match)  {
         val currentMatches = (matchesResponse.value as NetworkResult.Success)
         viewModelScope.launch(Dispatchers.IO) {
             match.id?.let {id ->

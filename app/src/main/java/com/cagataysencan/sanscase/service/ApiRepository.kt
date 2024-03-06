@@ -5,8 +5,9 @@ import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.model.MatchResponse
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class ApiRepository(private val apiService: ApiService) {
+class ApiRepository @Inject constructor(private val apiService: ApiService) {
     suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<HashMap<String, List<Match>>> {
         return try {
             val response = apiService.getMatches()
