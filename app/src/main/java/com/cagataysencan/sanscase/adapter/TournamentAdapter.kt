@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
-import com.cagataysencan.sanscase.constant.Constants
 import com.cagataysencan.sanscase.databinding.TournamentCardViewBinding
 import com.cagataysencan.sanscase.model.Match
 

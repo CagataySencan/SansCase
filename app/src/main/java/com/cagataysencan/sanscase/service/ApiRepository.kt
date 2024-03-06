@@ -1,8 +1,6 @@
 package com.cagataysencan.sanscase.service
 
-import com.cagataysencan.sanscase.constant.Constants
 import com.cagataysencan.sanscase.constant.MatchStatus
-import com.cagataysencan.sanscase.database.DatabaseRepository
 import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.model.MatchResponse
 import retrofit2.HttpException

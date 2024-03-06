@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.cagataysencan.sanscase.constant.Constants
 import com.cagataysencan.sanscase.database.AppDatabase
 import com.cagataysencan.sanscase.database.DatabaseRepository
 import com.cagataysencan.sanscase.model.Match
