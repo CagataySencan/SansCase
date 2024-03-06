@@ -14,7 +14,6 @@ class ApiRepository(private val apiService: ApiService) {
             val response = apiService.getMatches()
             val processedMatches = addFavoriteMatches(response.body(),favoriteMatches)
             val processedMatchesMap = processMatches(processedMatches)
-            processedMatchesMap[Constants.FAVORITES] = favoriteMatches
             if(processedMatchesMap.isNotEmpty()) {
                 NetworkResult.Success(processedMatchesMap)
             } else {

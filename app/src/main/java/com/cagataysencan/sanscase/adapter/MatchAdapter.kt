@@ -9,7 +9,7 @@ import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.databinding.MatchCardViewBinding
 import com.cagataysencan.sanscase.model.Match
 
-class MatchAdapter(private val matchArrayList: List<Match>, private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
+class MatchAdapter(private var matchArrayList: List<Match>, private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     inner class MatchViewHolder(var view : MatchCardViewBinding) : RecyclerView.ViewHolder(view.root)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchAdapter.MatchViewHolder {
@@ -25,6 +25,11 @@ class MatchAdapter(private val matchArrayList: List<Match>, private val itemClic
 
     override fun getItemCount(): Int {
         return matchArrayList.size
+    }
+
+    fun updateMatches(matchArrayList: List<Match>) {
+        this.matchArrayList = matchArrayList
+        this.notifyDataSetChanged()
     }
 
     interface OnItemClickListener {

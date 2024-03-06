@@ -26,8 +26,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var tournamentAdapter: TournamentAdapter
-    private lateinit var linearLayoutManager: LinearLayoutManager
-
+    private lateinit var favoriteMatchAdapter: MatchAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -43,14 +42,16 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     }
 
     private fun initiateFragment() {
-        tournamentAdapter =  TournamentAdapter(HashMap<String, List<Match>>(), this)
-        linearLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
-        binding.tournamentRecyclerView.layoutManager = linearLayoutManager
+        tournamentAdapter = TournamentAdapter(HashMap<String, List<Match>>(), this)
+        favoriteMatchAdapter = MatchAdapter(ArrayList<Match>(), this)
+        binding.tournamentRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.tournamentRecyclerView.adapter = tournamentAdapter
+        binding.favoriteMatchRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
+        binding.favoriteMatchRecyclerView.adapter = favoriteMatchAdapter
 
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))[MainViewModel::class.java]
         viewModel.getMatches()
-
+        viewModel.getFavoriteMatches()
         observeLiveData()
     }
 
@@ -58,11 +59,20 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {
-                    tournamentAdapter.updateMatches(matchesResponse.matchesMap!!)
+                    tournamentAdapter.updateMatches(matchesResponse.matchesMap)
                 }
                 is NetworkResult.Error -> {
                     createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)
                 }
+            }
+        })
+
+        viewModel.favoriteMatches.observe(viewLifecycleOwner, Observer { favoriteMatches ->
+            favoriteMatchAdapter.updateMatches(favoriteMatches)
+            if(favoriteMatchAdapter.itemCount == 0) {
+                binding.favoriteMatchesLayout.visibility = View.GONE
+            } else {
+                binding.favoriteMatchesLayout.visibility = View.VISIBLE
             }
         })
     }

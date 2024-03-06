@@ -18,15 +18,24 @@ import kotlinx.coroutines.withContext
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val databaseRepository = DatabaseRepository(AppDatabase.getDatabase(application)!!)
     private val apiRepository = ApiRepository(ApiService())
-    private val favoriteMatchList = ArrayList<Match>()
+    private var favoriteMatchList = ArrayList<Match>()
     val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
-
+    val favoriteMatches =  MutableLiveData<List<Match>>()
 
     fun getMatches() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = apiRepository.getMatches(databaseRepository.getAllMatches())
             withContext(Dispatchers.Main) {
                 matchesResponse.value = result
+            }
+        }
+    }
+
+    fun getFavoriteMatches() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = databaseRepository.getAllMatches()
+            withContext(Dispatchers.Main) {
+                favoriteMatches.value = result
             }
         }
     }
@@ -39,16 +48,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if(match.isFavorite) {
                     response.matchesMap[match.tournament.name]?.get(matchFromResponse!!)?.isFavorite = false
                     databaseRepository.deleteMatchById(id)
-                    favoriteMatchList.remove(match)
                 } else {
                     response.matchesMap[match.tournament.name]?.get(matchFromResponse!!)?.isFavorite = true
                     databaseRepository.insertMatch(match)
-                    favoriteMatchList.add(match)
                 }
-                response.matchesMap[Constants.FAVORITES] = databaseRepository.getAllMatches()
                 response.matchesMap = HashMap(response.matchesMap.filterValues { it.isNotEmpty() })
+                favoriteMatchList = databaseRepository.getAllMatches()
             }
             withContext(Dispatchers.Main) {
+                favoriteMatches.value = favoriteMatchList
                 matchesResponse.value = response
             }
         }
