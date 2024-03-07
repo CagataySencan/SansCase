@@ -45,7 +45,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     }
 
     private fun initiateFragment() {
-        tournamentAdapter = TournamentAdapter(HashMap<String, List<Match>>(), this)
+        tournamentAdapter = TournamentAdapter(ArrayList(),this)
         binding.tournamentRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.tournamentRecyclerView.adapter = tournamentAdapter
 
@@ -53,6 +53,11 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
         binding.favoriteMatchRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         binding.favoriteMatchRecyclerView.adapter = favoriteMatchAdapter
 
+        binding.swipeLayout.setOnRefreshListener {
+            viewModel.getMatches()
+            viewModel.getFavoriteMatches()
+            binding.swipeLayout.isRefreshing = false
+        }
         observeLiveData()
     }
 
@@ -63,7 +68,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {
-                    tournamentAdapter.updateMatches(matchesResponse.matchesMap)
+                    tournamentAdapter.updateMatches(matchesResponse.matchList)
                 }
                 is NetworkResult.Error -> {
                     createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)

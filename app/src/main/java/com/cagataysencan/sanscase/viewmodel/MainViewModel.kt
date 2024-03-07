@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val matchRepository: MatchRepository) : ViewModel() {
-    val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
+    val matchesResponse = MutableLiveData<NetworkResult<List<List<Match>>>>()
     val favoriteMatches = MutableLiveData<List<Match>>()
 
     fun getMatches() {
@@ -41,13 +41,13 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
             val currentMatches = (matchesResponse.value as NetworkResult.Success)
             var favoriteMatchList = ArrayList<Match>()
             viewModelScope.launch(Dispatchers.IO) {
-                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == match.id }
+                val favoriteMatchId = currentMatches.matchList.flatten().find { it.id == match.id }
                 match.isFavorite = !match.isFavorite
                 favoriteMatchId?.let {
-                    currentMatches.matchesMap[match.tournament.name]!![it].isFavorite = match.isFavorite
+                    currentMatches.matchList.flatten().first { it.id == match.id }.isFavorite = match.isFavorite
                 }
                 if (!match.isFavorite) matchRepository.deleteMatchById(match.id) else matchRepository.insertMatch(match)
-                currentMatches.matchesMap = HashMap(currentMatches.matchesMap.filterValues { it.isNotEmpty() })
+                currentMatches.matchList = currentMatches.matchList.filter { it.isNotEmpty() }
                 favoriteMatchList = matchRepository.getAllMatches()
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList

@@ -11,13 +11,13 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MatchRepository @Inject constructor(private val matchDao: MatchDao, private val apiService: ApiService) {
-    suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<HashMap<String, List<Match>>> {
+    suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<List<List<Match>>> {
         return try {
             val response = apiService.getMatches()
             val processedMatches = addFavoriteMatches(response.body(),favoriteMatches)
-            val processedMatchesMap = processMatches(processedMatches)
-            if(processedMatchesMap.isNotEmpty()) {
-                NetworkResult.Success(processedMatchesMap)
+            val processedMatchesList = processMatches(processedMatches)
+            if(!processedMatchesList.isNullOrEmpty()) {
+                NetworkResult.Success(processedMatchesList)
             } else {
                 NetworkResult.Error(Exception(Throwable()))
             }
@@ -51,8 +51,8 @@ class MatchRepository @Inject constructor(private val matchDao: MatchDao, privat
         return matchResponse
     }
 
-    private fun processMatches(matchResponse: MatchResponse?) : HashMap<String, List<Match>> {
-        return HashMap(matchResponse?.matchArrayList?.let { matchesList ->
+    private fun processMatches(matchResponse: MatchResponse?) : List<List<Match>>? {
+        return matchResponse?.matchArrayList?.let { matchesList ->
             matchesList
                 .filter {match ->
                     match.date != null && match.score?.scoreType == MatchStatus.MATCH_ENDED.intValue && match.tournament?.name != null
@@ -63,6 +63,7 @@ class MatchRepository @Inject constructor(private val matchDao: MatchDao, privat
                 .mapValues {matchesMap ->
                     matchesMap.value.sortedBy { match -> match.date!! }
                 }
-        }!!)
+                .values.toList()
+        }
     }
 }
