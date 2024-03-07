@@ -10,7 +10,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
-
+// Repository class for the Match model. Does all the database and api call operations for the Match model.
 class MatchRepository @Inject constructor(private val matchDao: MatchDao, private val apiService: ApiService) {
     suspend fun getMatches() : NetworkResult<List<List<Match>>> {
         return try {
@@ -45,17 +45,21 @@ class MatchRepository @Inject constructor(private val matchDao: MatchDao, privat
         return apiService.getMatches()
     }
 
+    // Processes the matches from the server, pairs with favorite matches that saved in the database, marks isFavorite property
+    // to true if the match from response is in database
     private fun addFavoriteMatches(matchResponse: MatchResponse?, favoriteMatches : ArrayList<Match>) : MatchResponse? {
         matchResponse?.matchArrayList?.let {matchArrayList ->
-            matchArrayList.filter { item1 ->
-                favoriteMatches.any { item2 ->
-                    item1.id == item2.id
+            matchArrayList.filter { matchInResponse ->
+                favoriteMatches.any { matchInDatabase ->
+                    matchInResponse.id == matchInDatabase.id
                 }
             }.forEach { it.isFavorite = true }
         }
         return matchResponse
     }
 
+    // Processes the matches, firstly, deletes matches that are not have dates and tournaments and filters out matches that are unfinished
+    // after that groups the matches by tournament name, and convert the hashmap to list of grouped matches
     private fun processMatches(matchResponse: MatchResponse?) : List<List<Match>>? {
         return matchResponse?.matchArrayList?.let { matchesList ->
             matchesList

@@ -66,6 +66,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     private fun observeLiveData() {
         viewModel.getMatches()
 
+        // Observes the response of the matches.
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
                 is NetworkResult.Success -> {
@@ -77,6 +78,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
             }
         })
 
+        // Observes the favorite matches from database.
         viewModel.favoriteMatches.observe(viewLifecycleOwner, Observer { favoriteMatches ->
             favoriteMatchAdapter.updateMatches(favoriteMatches)
             if(favoriteMatchAdapter.itemCount == 0) {
@@ -86,6 +88,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
             }
         })
 
+        // Observes the loading state, controls the visibility of the progress bar and swipe refresh layout
         viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
             when (loading) {
                 true -> {
@@ -101,14 +104,14 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
         })
     }
 
+    // Handles the click event of row. Navigates to DetailFragment with the selected match.
     override fun onItemClick(match: Match) {
         val action = MainFragmentDirections.actionMainFragmentToDetailFragment(match)
         Navigation.findNavController(requireView()).navigate(action)
     }
 
+    // Handles the click event of favorite button.
     override fun onFavoriteClick(match: Match, view: ImageView) {
-        if (!viewModel.toggleFavorite(match)) {
-            createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)
-        }
+        viewModel.toggleFavorite(match)
     }
 }

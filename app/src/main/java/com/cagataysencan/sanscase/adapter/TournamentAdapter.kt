@@ -26,6 +26,7 @@ class TournamentAdapter(private var matchList: List<List<Match>>, private val on
 
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
         holder.view.match = matchList[position].first()
+        // Setup for match recycler view and adapter
         holder.view.matchRecyclerView.addItemDecoration(DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL))
         holder.view.matchRecyclerView.layoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
         holder.view.matchRecyclerView.adapter = MatchAdapter(matchList[position], onItemClickListener)

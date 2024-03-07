@@ -16,6 +16,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+// Dependency Injection Modules
 @Module
 @InstallIn(ViewModelComponent::class)
 object MainViewModelModule {

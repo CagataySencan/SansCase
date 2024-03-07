@@ -18,6 +18,8 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
     val matchesResponse = MutableLiveData<NetworkResult<List<List<Match>>>>()
     val favoriteMatches = MutableLiveData<List<Match>>()
     val loading = MutableLiveData<Boolean>()
+
+    // Gets favorite matches from the database and the matches from the server.
     fun getMatches() {
         loading.value = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -31,22 +33,24 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
         }
     }
 
-    fun toggleFavorite(match: Match) : Boolean {
-        val isMatchFavorable = matchesResponse.value != null && match.id != null
-        if(isMatchFavorable) {
+    // Handles the favorite click event of a match.
+    fun toggleFavorite(match: Match)  {
+        var favoriteMatchList: ArrayList<Match>
+        // If matches exist, toggle favorite status of the match.
+        if(matchesResponse.value != null && match.id != null) {
             val currentMatches = (matchesResponse.value as NetworkResult.Success)
-            val favoriteMatchId = currentMatches.matchList.flatten().find { it.id == match.id }
-            var favoriteMatchList: ArrayList<Match>
-
+            // Change the status of the match.
             match.isFavorite = !match.isFavorite
             loading.value = true
 
-            favoriteMatchId?.let {
-                currentMatches.matchList.flatten().first { it.id == match.id }.isFavorite = match.isFavorite
+            // Check if the match still exists in server response. If exist update it's isFavorite property
+            currentMatches.matchList.flatten().find { it.id == match.id }?.let {
+                it.isFavorite = match.isFavorite
             }
 
+            // If the match isFavorite, delete the match from the database. If not, add it to the database. And Update the livedata
             viewModelScope.launch(Dispatchers.IO) {
-                if (!match.isFavorite) matchRepository.deleteMatchById(match.id!!) else matchRepository.insertMatch(match)
+                if (!match.isFavorite) matchRepository.deleteMatchById(match.id) else matchRepository.insertMatch(match)
                 favoriteMatchList = matchRepository.getMatchesFromDB()
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList
@@ -54,7 +58,16 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
                     loading.value = false
                 }
             }
+        // If matches no longer exist, remove the match from the database.
+        } else if (matchesResponse.value == null && match.id != null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                matchRepository.deleteMatchById(match.id)
+                favoriteMatchList = matchRepository.getMatchesFromDB()
+                withContext(Dispatchers.Main) {
+                    favoriteMatches.value = favoriteMatchList
+                    loading.value = false
+                }
+            }
         }
-        return isMatchFavorable
     }
 }

@@ -28,6 +28,7 @@ fun createAlertDialogWithAction(context: Context, messageText : String , okButto
     alertDialogBuilder.create()
     alertDialogBuilder.show()
 }
+// Extension function that is used to download an image from a URL into an ImageView. It uses the Glide library for image loading.
 fun ImageView.downloadFromUrl(url: String?, progressDrawable: CircularProgressDrawable){
 
     val options = RequestOptions()
@@ -46,12 +47,13 @@ fun placeholderProgressBar(context: Context) : CircularProgressDrawable {
         start()
     }
 }
-
+// Binding adapter that is used to download an image from a URL into an ImageView. With @BindingAdapter annotation
+// is used to associate the downloadImage function with the android:downloadUrl
 @BindingAdapter("android:downloadUrl")
 fun downloadImage(view: ImageView, url:String?) {
     view.downloadFromUrl(url, placeholderProgressBar(view.context))
 }
-
+// Same purpose as the downloadImage function, but this time it is used to change the image by isFavorite property.
 @BindingAdapter("android:changeImageView")
 fun changeImageView(view: ImageView, match: Match) {
     view.setImageResource(if (match.isFavorite) R.drawable.favorited_match else R.drawable.unfavorited_match)

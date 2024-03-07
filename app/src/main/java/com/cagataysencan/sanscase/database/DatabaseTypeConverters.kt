@@ -8,6 +8,7 @@ import com.cagataysencan.sanscase.model.Tournament
 import com.google.gson.Gson
 
 class DatabaseTypeConverters {
+    // Type Converters for store objects as JSON string in Room database
     @TypeConverter
     fun fromTeam(team: Team?): String? {
         return Gson().toJson(team)

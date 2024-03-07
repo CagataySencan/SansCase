@@ -34,6 +34,7 @@ class MatchAdapter(private var matchArrayList: List<Match>, private val itemClic
     }
 
     interface OnItemClickListener {
+        // Called when an item or Favorite button is clicked.
         fun onItemClick(match: Match)
         fun onFavoriteClick(match: Match, view: ImageView)
     }
