@@ -4,9 +4,8 @@ package com.cagataysencan.sanscase.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cagataysencan.sanscase.database.DatabaseRepository
 import com.cagataysencan.sanscase.model.Match
-import com.cagataysencan.sanscase.service.ApiRepository
+import com.cagataysencan.sanscase.repository.MatchRepository
 import com.cagataysencan.sanscase.service.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,14 +14,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val databaseRepository: DatabaseRepository, private val apiRepository: ApiRepository) : ViewModel() {
+class MainViewModel @Inject constructor(private val matchRepository: MatchRepository) : ViewModel() {
     private var favoriteMatchList = ArrayList<Match>()
     val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
     val favoriteMatches =  MutableLiveData<List<Match>>()
 
     fun getMatches() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = apiRepository.getMatches(databaseRepository.getAllMatches())
+            val result = matchRepository.getMatches(matchRepository.getAllMatches())
             withContext(Dispatchers.Main) {
                 matchesResponse.value = result
             }
@@ -31,7 +30,7 @@ class MainViewModel @Inject constructor(private val databaseRepository: Database
 
     fun getFavoriteMatches() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = databaseRepository.getAllMatches()
+            val result = matchRepository.getAllMatches()
             withContext(Dispatchers.Main) {
                 favoriteMatches.value = result
             }
@@ -47,9 +46,9 @@ class MainViewModel @Inject constructor(private val databaseRepository: Database
                 favoriteMatchId?.let {
                     currentMatches.matchesMap[match.tournament.name]!![it].isFavorite = match.isFavorite
                 }
-                if (!match.isFavorite) databaseRepository.deleteMatchById(id) else databaseRepository.insertMatch(match)
+                if (!match.isFavorite) matchRepository.deleteMatchById(id) else matchRepository.insertMatch(match)
                 currentMatches.matchesMap = HashMap(currentMatches.matchesMap.filterValues { it.isNotEmpty() })
-                favoriteMatchList = databaseRepository.getAllMatches()
+                favoriteMatchList = matchRepository.getAllMatches()
             }
             withContext(Dispatchers.Main) {
                 favoriteMatches.value = favoriteMatchList

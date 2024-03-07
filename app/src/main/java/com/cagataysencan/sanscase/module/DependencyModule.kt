@@ -2,9 +2,8 @@ package com.cagataysencan.sanscase.module
 
 import android.content.Context
 import com.cagataysencan.sanscase.database.AppDatabase
-import com.cagataysencan.sanscase.database.BaseDao
-import com.cagataysencan.sanscase.database.DatabaseRepository
-import com.cagataysencan.sanscase.service.ApiRepository
+import com.cagataysencan.sanscase.database.MatchDao
+import com.cagataysencan.sanscase.repository.MatchRepository
 import com.cagataysencan.sanscase.service.ApiService
 import com.cagataysencan.sanscase.viewmodel.DetailViewModel
 import com.cagataysencan.sanscase.viewmodel.MainViewModel
@@ -23,16 +22,11 @@ object MainViewModelModule {
 
     @ViewModelScoped
     @Provides
-    fun providesDatabaseRepository(
-        baseDao: BaseDao,
-    ): DatabaseRepository {
-        return DatabaseRepository(baseDao)
-    }
-
-    @ViewModelScoped
-    @Provides
-    fun providesApiRepository(): ApiRepository {
-        return ApiRepository(ApiService())
+    fun provideMatchRepository(
+        matchDao: MatchDao,
+        apiService: ApiService
+    ): MatchRepository {
+        return MatchRepository(matchDao,apiService)
     }
 }
 
@@ -46,15 +40,19 @@ object MainFragmentModule {
         return AppDatabase.getDatabase(context)!!
     }
     @Provides
-    fun provideChannelDao(appDatabase: AppDatabase): BaseDao {
+    fun provideMatchDao(appDatabase: AppDatabase): MatchDao {
         return appDatabase.getMatchDao()
+    }
+
+    @Provides
+    fun provideApiService(): ApiService {
+        return ApiService()
     }
     @Singleton
     @Provides
     fun providesMainViewModel(
-        databaseRepository: DatabaseRepository,
-        apiRepository: ApiRepository): MainViewModel {
-        return MainViewModel(databaseRepository, apiRepository)
+        matchRepository: MatchRepository): MainViewModel {
+        return MainViewModel(matchRepository)
     }
 
     @Singleton

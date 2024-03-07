@@ -1,13 +1,16 @@
-package com.cagataysencan.sanscase.service
+package com.cagataysencan.sanscase.repository
 
 import com.cagataysencan.sanscase.constant.MatchStatus
+import com.cagataysencan.sanscase.database.MatchDao
 import com.cagataysencan.sanscase.model.Match
 import com.cagataysencan.sanscase.model.MatchResponse
+import com.cagataysencan.sanscase.service.ApiService
+import com.cagataysencan.sanscase.service.NetworkResult
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class ApiRepository @Inject constructor(private val apiService: ApiService) {
+class MatchRepository @Inject constructor(private val matchDao: MatchDao, private val apiService: ApiService) {
     suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<HashMap<String, List<Match>>> {
         return try {
             val response = apiService.getMatches()
@@ -19,12 +22,22 @@ class ApiRepository @Inject constructor(private val apiService: ApiService) {
                 NetworkResult.Error(Exception(Throwable()))
             }
         } catch (e: HttpException) {
-            //handles exception with the request
             NetworkResult.Error(exception = e)
         } catch (e: IOException) {
-            //handles no internet exception
             NetworkResult.Error(exception = e)
         }
+    }
+
+    suspend fun insertMatch(match: Match) {
+        matchDao.insertMatch(match)
+    }
+
+    suspend fun getAllMatches(): ArrayList<Match> {
+        return ArrayList(matchDao.getAllMatches())
+    }
+
+    suspend fun deleteMatchById(id: Long) {
+        matchDao.deleteMatchById(id)
     }
 
     private fun addFavoriteMatches(matchResponse: MatchResponse?, favoriteMatches : ArrayList<Match>) : MatchResponse? {

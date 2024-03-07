@@ -6,7 +6,7 @@ import androidx.room.Upsert
 import com.cagataysencan.sanscase.model.Match
 
 @Dao
-interface BaseDao {
+interface MatchDao {
     @Upsert
     suspend fun insertMatch(match: Match)
 
