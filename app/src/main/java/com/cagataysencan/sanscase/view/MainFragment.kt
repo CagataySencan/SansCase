@@ -57,7 +57,6 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
 
         binding.swipeLayout.setOnRefreshListener {
             viewModel.getMatches()
-            viewModel.getFavoriteMatches()
             binding.swipeLayout.isRefreshing = false
         }
 
@@ -66,7 +65,6 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
 
     private fun observeLiveData() {
         viewModel.getMatches()
-        viewModel.getFavoriteMatches()
 
         viewModel.matchesResponse.observe(viewLifecycleOwner, Observer { matchesResponse ->
             when (matchesResponse) {
@@ -85,6 +83,20 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
                 binding.favoriteMatchesLayout.visibility = View.GONE
             } else {
                 binding.favoriteMatchesLayout.visibility = View.VISIBLE
+            }
+        })
+
+        viewModel.loading.observe(viewLifecycleOwner, Observer { loading ->
+            when (loading) {
+                true -> {
+                    binding.swipeLayout.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                false -> {
+                    binding.swipeLayout.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+
+                }
             }
         })
     }

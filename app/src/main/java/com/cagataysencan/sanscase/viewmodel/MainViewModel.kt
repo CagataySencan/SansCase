@@ -17,33 +17,29 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val matchRepository: MatchRepository) : ViewModel() {
     val matchesResponse = MutableLiveData<NetworkResult<List<List<Match>>>>()
     val favoriteMatches = MutableLiveData<List<Match>>()
-
+    val loading = MutableLiveData<Boolean>()
     fun getMatches() {
+        loading.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            val result = matchRepository.getMatches()
+            val matches = matchRepository.getMatches()
+            val favoriteMatchesFromDB = matchRepository.getMatchesFromDB()
             withContext(Dispatchers.Main) {
-                matchesResponse.value = result
-            }
-        }
-    }
-
-    fun getFavoriteMatches() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = matchRepository.getMatchesFromDB()
-            withContext(Dispatchers.Main) {
-                favoriteMatches.value = result
+                matchesResponse.value = matches
+                favoriteMatches.value = favoriteMatchesFromDB
+                loading.value = false
             }
         }
     }
 
     fun toggleFavorite(match: Match) : Boolean {
         val isMatchFavorable = matchesResponse.value != null && match.id != null
-
         if(isMatchFavorable) {
             val currentMatches = (matchesResponse.value as NetworkResult.Success)
             val favoriteMatchId = currentMatches.matchList.flatten().find { it.id == match.id }
             var favoriteMatchList: ArrayList<Match>
+
             match.isFavorite = !match.isFavorite
+            loading.value = true
 
             favoriteMatchId?.let {
                 currentMatches.matchList.flatten().first { it.id == match.id }.isFavorite = match.isFavorite
@@ -55,6 +51,7 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList
                     matchesResponse.value = currentMatches
+                    loading.value = false
                 }
             }
         }
