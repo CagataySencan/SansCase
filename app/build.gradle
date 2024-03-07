@@ -16,16 +16,27 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
+        // Embedded Base url and match url for reverse engineering
         buildConfigField "String", "BASE_URL", "\"https://apivx.misli.com/\""
         buildConfigField "String", "MATCH_URL", "\"api/mobile/v2/statistics/sport/SOCCER/matches\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
+        // Different rules for build types. In release mode, code obfuscation, shrinking enabled, also debuggable option is disabled.
+        debug {
+            debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            zipAlignEnabled false
+            shrinkResources false
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            shrinkResources true
         }
     }
 
