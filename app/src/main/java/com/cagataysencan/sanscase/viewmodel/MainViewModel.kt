@@ -41,7 +41,6 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
             val currentMatches = (matchesResponse.value as NetworkResult.Success)
             // Change the status of the match.
             match.isFavorite = !match.isFavorite
-            loading.value = true
 
             // Check if the match still exists in server response. If exist update it's isFavorite property
             currentMatches.matchList.flatten().find { it.id == match.id }?.let {
@@ -55,7 +54,6 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList
                     matchesResponse.value = currentMatches
-                    loading.value = false
                 }
             }
         // If matches no longer exist, remove the match from the database.
@@ -65,7 +63,6 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
                 favoriteMatchList = matchRepository.getMatchesFromDB()
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList
-                    loading.value = false
                 }
             }
         }
