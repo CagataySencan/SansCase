@@ -87,6 +87,8 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
     }
 
     override fun onFavoriteClick(match: Match, view: ImageView) {
-        viewModel.toggleFavorite(match)
+        if (!viewModel.toggleFavorite(match)) {
+            createAlertDialogWithAction(this@MainFragment.requireContext(), getString(R.string.no_matches_found), getString(R.string.retry) , viewModel::getMatches)
+        }
     }
 }

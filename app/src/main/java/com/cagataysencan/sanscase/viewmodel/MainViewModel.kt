@@ -36,24 +36,25 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
         }
     }
 
-    fun toggleFavorite(match: Match)  {
-        val currentMatches = (matchesResponse.value as NetworkResult.Success)
-        var favoriteMatchList = ArrayList<Match>()
-        viewModelScope.launch(Dispatchers.IO) {
-            match.id?.let {id ->
-                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == id }
+    fun toggleFavorite(match: Match) : Boolean {
+        if(matchesResponse.value != null && match.id != null) {
+            val currentMatches = (matchesResponse.value as NetworkResult.Success)
+            var favoriteMatchList = ArrayList<Match>()
+            viewModelScope.launch(Dispatchers.IO) {
+                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == match.id }
                 match.isFavorite = !match.isFavorite
                 favoriteMatchId?.let {
                     currentMatches.matchesMap[match.tournament.name]!![it].isFavorite = match.isFavorite
                 }
-                if (!match.isFavorite) matchRepository.deleteMatchById(id) else matchRepository.insertMatch(match)
+                if (!match.isFavorite) matchRepository.deleteMatchById(match.id) else matchRepository.insertMatch(match)
                 currentMatches.matchesMap = HashMap(currentMatches.matchesMap.filterValues { it.isNotEmpty() })
                 favoriteMatchList = matchRepository.getAllMatches()
+                withContext(Dispatchers.Main) {
+                    favoriteMatches.value = favoriteMatchList
+                    matchesResponse.value = currentMatches
+                }
             }
-            withContext(Dispatchers.Main) {
-                favoriteMatches.value = favoriteMatchList
-                matchesResponse.value = currentMatches
-            }
-        }
+            return true
+        } else return false
     }
 }

@@ -26,7 +26,7 @@ fun createAlertDialogWithAction(context: Context, messageText : String , okButto
         action()
         dialog.dismiss()
     }
-
+    alertDialogBuilder.setCancelable(false)
     alertDialogBuilder.create()
     alertDialogBuilder.show()
 }
