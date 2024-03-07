@@ -15,17 +15,15 @@ import com.cagataysencan.sanscase.model.Match
 
 fun createAlertDialogWithAction(context: Context, messageText : String , okButtonText : String , action : () -> Unit) {
     val alertDialogBuilder = AlertDialog.Builder(context, R.style.CustomAlertDialog)
-    val inflater = LayoutInflater.from(context)
 
-    // Set the title and message for the dialog
     alertDialogBuilder.setTitle(R.string.warning)
     alertDialogBuilder.setMessage(messageText)
 
-    // Set a positive button and its click listener
     alertDialogBuilder.setPositiveButton(okButtonText) { dialog, which ->
         action()
         dialog.dismiss()
     }
+
     alertDialogBuilder.setCancelable(false)
     alertDialogBuilder.create()
     alertDialogBuilder.show()

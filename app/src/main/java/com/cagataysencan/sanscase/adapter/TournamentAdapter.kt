@@ -11,6 +11,7 @@ import com.cagataysencan.sanscase.databinding.TournamentCardViewBinding
 import com.cagataysencan.sanscase.model.Match
 
 class TournamentAdapter(private var matchList: List<List<Match>>, private val onItemClickListener: MatchAdapter.OnItemClickListener) : RecyclerView.Adapter<TournamentAdapter.TournamentViewHolder>() {
+
     inner class TournamentViewHolder(var view: TournamentCardViewBinding) : RecyclerView.ViewHolder(view.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TournamentViewHolder {
@@ -25,13 +26,9 @@ class TournamentAdapter(private var matchList: List<List<Match>>, private val on
 
     override fun onBindViewHolder(holder: TournamentViewHolder, position: Int) {
         holder.view.match = matchList[position].first()
-        val linearLayoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
-        val matchAdapter = MatchAdapter(matchList[position], onItemClickListener)
-        val dividerItemDecoration = DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL)
-        holder.view.matchRecyclerView.addItemDecoration(dividerItemDecoration)
-        holder.view.matchRecyclerView.layoutManager = linearLayoutManager
-        holder.view.matchRecyclerView.adapter = matchAdapter
-
+        holder.view.matchRecyclerView.addItemDecoration(DividerItemDecoration(holder.view.matchRecyclerView.context, LinearLayoutManager.VERTICAL))
+        holder.view.matchRecyclerView.layoutManager = LinearLayoutManager(holder.view.matchRecyclerView.context, RecyclerView.VERTICAL,false)
+        holder.view.matchRecyclerView.adapter = MatchAdapter(matchList[position], onItemClickListener)
     }
 
     fun updateMatches(matchList: List<List<Match>>) {

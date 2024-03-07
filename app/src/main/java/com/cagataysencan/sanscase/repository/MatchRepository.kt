@@ -7,24 +7,25 @@ import com.cagataysencan.sanscase.model.MatchResponse
 import com.cagataysencan.sanscase.service.ApiService
 import com.cagataysencan.sanscase.service.NetworkResult
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 
 class MatchRepository @Inject constructor(private val matchDao: MatchDao, private val apiService: ApiService) {
-    suspend fun getMatches(favoriteMatches : ArrayList<Match> = ArrayList()) : NetworkResult<List<List<Match>>> {
+    suspend fun getMatches() : NetworkResult<List<List<Match>>> {
         return try {
-            val response = apiService.getMatches()
-            val processedMatches = addFavoriteMatches(response.body(),favoriteMatches)
+            val response = getMatchesFromServer()
+            val processedMatches = addFavoriteMatches(response.body(), getMatchesFromDB())
             val processedMatchesList = processMatches(processedMatches)
             if(!processedMatchesList.isNullOrEmpty()) {
                 NetworkResult.Success(processedMatchesList)
             } else {
                 NetworkResult.Error(Exception(Throwable()))
             }
-        } catch (e: HttpException) {
-            NetworkResult.Error(exception = e)
-        } catch (e: IOException) {
-            NetworkResult.Error(exception = e)
+        } catch (exception: HttpException) {
+            NetworkResult.Error(exception)
+        } catch (exception: IOException) {
+            NetworkResult.Error(exception)
         }
     }
 
@@ -32,12 +33,16 @@ class MatchRepository @Inject constructor(private val matchDao: MatchDao, privat
         matchDao.insertMatch(match)
     }
 
-    suspend fun getAllMatches(): ArrayList<Match> {
+    suspend fun getMatchesFromDB(): ArrayList<Match> {
         return ArrayList(matchDao.getAllMatches())
     }
 
     suspend fun deleteMatchById(id: Long) {
         matchDao.deleteMatchById(id)
+    }
+
+    suspend fun getMatchesFromServer() : Response<MatchResponse> {
+        return apiService.getMatches()
     }
 
     private fun addFavoriteMatches(matchResponse: MatchResponse?, favoriteMatches : ArrayList<Match>) : MatchResponse? {

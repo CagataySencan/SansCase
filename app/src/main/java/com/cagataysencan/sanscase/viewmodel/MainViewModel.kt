@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
 
     fun getMatches() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = matchRepository.getMatches(matchRepository.getAllMatches())
+            val result = matchRepository.getMatches()
             withContext(Dispatchers.Main) {
                 matchesResponse.value = result
             }
@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
 
     fun getFavoriteMatches() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = matchRepository.getAllMatches()
+            val result = matchRepository.getMatchesFromDB()
             withContext(Dispatchers.Main) {
                 favoriteMatches.value = result
             }
@@ -37,24 +37,27 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
     }
 
     fun toggleFavorite(match: Match) : Boolean {
-        if(matchesResponse.value != null && match.id != null) {
+        val isMatchFavorable = matchesResponse.value != null && match.id != null
+
+        if(isMatchFavorable) {
             val currentMatches = (matchesResponse.value as NetworkResult.Success)
-            var favoriteMatchList = ArrayList<Match>()
+            val favoriteMatchId = currentMatches.matchList.flatten().find { it.id == match.id }
+            var favoriteMatchList: ArrayList<Match>
+            match.isFavorite = !match.isFavorite
+
+            favoriteMatchId?.let {
+                currentMatches.matchList.flatten().first { it.id == match.id }.isFavorite = match.isFavorite
+            }
+
             viewModelScope.launch(Dispatchers.IO) {
-                val favoriteMatchId = currentMatches.matchList.flatten().find { it.id == match.id }
-                match.isFavorite = !match.isFavorite
-                favoriteMatchId?.let {
-                    currentMatches.matchList.flatten().first { it.id == match.id }.isFavorite = match.isFavorite
-                }
-                if (!match.isFavorite) matchRepository.deleteMatchById(match.id) else matchRepository.insertMatch(match)
-                currentMatches.matchList = currentMatches.matchList.filter { it.isNotEmpty() }
-                favoriteMatchList = matchRepository.getAllMatches()
+                if (!match.isFavorite) matchRepository.deleteMatchById(match.id!!) else matchRepository.insertMatch(match)
+                favoriteMatchList = matchRepository.getMatchesFromDB()
                 withContext(Dispatchers.Main) {
                     favoriteMatches.value = favoriteMatchList
                     matchesResponse.value = currentMatches
                 }
             }
-            return true
-        } else return false
+        }
+        return isMatchFavorable
     }
 }

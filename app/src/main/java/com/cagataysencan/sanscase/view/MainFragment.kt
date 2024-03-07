@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cagataysencan.sanscase.R
@@ -51,6 +52,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
 
         favoriteMatchAdapter = MatchAdapter(ArrayList<Match>(), this)
         binding.favoriteMatchRecyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
+        binding.favoriteMatchRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
         binding.favoriteMatchRecyclerView.adapter = favoriteMatchAdapter
 
         binding.swipeLayout.setOnRefreshListener {
@@ -58,6 +60,7 @@ class MainFragment : Fragment(), MatchAdapter.OnItemClickListener {
             viewModel.getFavoriteMatches()
             binding.swipeLayout.isRefreshing = false
         }
+
         observeLiveData()
     }
 

@@ -12,6 +12,7 @@ import com.cagataysencan.sanscase.model.Match
 class MatchAdapter(private var matchArrayList: List<Match>, private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
 
     inner class MatchViewHolder(var view : MatchCardViewBinding) : RecyclerView.ViewHolder(view.root)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MatchAdapter.MatchViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = DataBindingUtil.inflate<MatchCardViewBinding>(inflater, R.layout.match_card_view, parent, false)

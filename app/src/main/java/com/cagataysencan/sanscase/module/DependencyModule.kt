@@ -19,7 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ViewModelComponent::class)
 object MainViewModelModule {
-
     @ViewModelScoped
     @Provides
     fun provideMatchRepository(
@@ -33,21 +32,6 @@ object MainViewModelModule {
 @Module
 @InstallIn(SingletonComponent::class)
 object MainFragmentModule {
-    @Provides
-    fun provideAppDatabase(
-        @ApplicationContext context: Context,
-    ) : AppDatabase {
-        return AppDatabase.getDatabase(context)!!
-    }
-    @Provides
-    fun provideMatchDao(appDatabase: AppDatabase): MatchDao {
-        return appDatabase.getMatchDao()
-    }
-
-    @Provides
-    fun provideApiService(): ApiService {
-        return ApiService()
-    }
     @Singleton
     @Provides
     fun providesMainViewModel(
@@ -59,5 +43,22 @@ object MainFragmentModule {
     @Provides
     fun providesDetailViewModel(): DetailViewModel {
         return DetailViewModel()
+    }
+
+    @Provides
+    fun provideAppDatabase(
+        @ApplicationContext context: Context,
+    ) : AppDatabase {
+        return AppDatabase.getDatabase(context)!!
+    }
+
+    @Provides
+    fun provideMatchDao(appDatabase: AppDatabase): MatchDao {
+        return appDatabase.getMatchDao()
+    }
+
+    @Provides
+    fun provideApiService(): ApiService {
+        return ApiService()
     }
 }
