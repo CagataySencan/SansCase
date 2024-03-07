@@ -15,9 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val matchRepository: MatchRepository) : ViewModel() {
-    private var favoriteMatchList = ArrayList<Match>()
     val matchesResponse = MutableLiveData<NetworkResult<HashMap<String, List<Match>>>>()
-    val favoriteMatches =  MutableLiveData<List<Match>>()
+    val favoriteMatches = MutableLiveData<List<Match>>()
 
     fun getMatches() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,6 +38,7 @@ class MainViewModel @Inject constructor(private val matchRepository: MatchReposi
 
     fun toggleFavorite(match: Match)  {
         val currentMatches = (matchesResponse.value as NetworkResult.Success)
+        var favoriteMatchList = ArrayList<Match>()
         viewModelScope.launch(Dispatchers.IO) {
             match.id?.let {id ->
                 val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == id }

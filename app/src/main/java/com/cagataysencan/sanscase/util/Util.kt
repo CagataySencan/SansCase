@@ -2,6 +2,9 @@ package com.cagataysencan.sanscase.util
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
@@ -11,7 +14,8 @@ import com.cagataysencan.sanscase.R
 import com.cagataysencan.sanscase.model.Match
 
 fun createAlertDialogWithAction(context: Context, messageText : String , okButtonText : String , action : () -> Unit) {
-    val alertDialogBuilder = AlertDialog.Builder(context)
+    val alertDialogBuilder = AlertDialog.Builder(context, R.style.CustomAlertDialog)
+    val inflater = LayoutInflater.from(context)
 
     // Set the title and message for the dialog
     alertDialogBuilder.setTitle(R.string.warning)
@@ -22,6 +26,7 @@ fun createAlertDialogWithAction(context: Context, messageText : String , okButto
         action()
         dialog.dismiss()
     }
+
     alertDialogBuilder.create()
     alertDialogBuilder.show()
 }
