@@ -42,14 +42,12 @@ class MainViewModel @Inject constructor(private val databaseRepository: Database
         val currentMatches = (matchesResponse.value as NetworkResult.Success)
         viewModelScope.launch(Dispatchers.IO) {
             match.id?.let {id ->
-                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]!!.indexOfFirst { it.id == id }
-                if(match.isFavorite) {
-                    currentMatches.matchesMap[match.tournament.name]!![favoriteMatchId].isFavorite = false
-                    databaseRepository.deleteMatchById(id)
-                } else {
-                    currentMatches.matchesMap[match.tournament.name]!![favoriteMatchId].isFavorite = true
-                    databaseRepository.insertMatch(match)
+                val favoriteMatchId = currentMatches.matchesMap[match.tournament!!.name]?.indexOfFirst { it.id == id }
+                match.isFavorite = !match.isFavorite
+                favoriteMatchId?.let {
+                    currentMatches.matchesMap[match.tournament.name]!![it].isFavorite = match.isFavorite
                 }
+                if (!match.isFavorite) databaseRepository.deleteMatchById(id) else databaseRepository.insertMatch(match)
                 currentMatches.matchesMap = HashMap(currentMatches.matchesMap.filterValues { it.isNotEmpty() })
                 favoriteMatchList = databaseRepository.getAllMatches()
             }
